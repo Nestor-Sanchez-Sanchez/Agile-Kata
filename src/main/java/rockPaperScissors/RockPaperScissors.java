@@ -2,7 +2,7 @@ package rockPaperScissors;
 
 import java.util.Scanner;
 
-public class Main {
+public class RockPaperScissors {
 
 	public static void main(String[] args) {
 		System.out.println("Input a movement (rock, paper, scissors)");
