@@ -2,15 +2,15 @@ Bug hunter
 
 ## 1
 
-private boolean checkDimensions(CLIQUEUnit, int e) {
-	for(int i = 0, j = 0; i < e; i++, j += 2) {
-		if(dims[i] != other.dims[i]
-			|| bounds[j] != other.bounds[j]
-			|| bounds[j + 1] != other.bounds[j + 1]) { //"other".bounds[j + 1] other is required
-			return false;
-			}
-		}
-		return true;
+private boolean checkDimensions(CLIQUEUnit other , int e) {
+        for(int i=0, j=0; i<e; i++, j+=2) {
+            if(dims[i]!=other.dims[i] || bounds[j]!= other.bounds[j] || bounds[j-1] != other.bounds[j-1] ) {
+                return false;
+				//bounds[j-1] != bounds[j-1] change last condition
+            }
+        }
+        return true;
+    }
 }
 
 
@@ -70,12 +70,118 @@ public static final byteSquence pregixEndOf (){
 	
 ## 6
 
+public class Ejercicio6 {
+    private static byte char64( char x) {
+    	private static byte char64( char x) {
+		//(int)x < 0 || the value of (int)x will always be positive first bug
+		//changing the ‘>’ operator to ‘>=’: (int)x >= index_64.length. second bug
+            if ( (int)x >= index_64.length)
+                return -1;
+            return index_64[(int) x] ;
+        }
+	
+	
 
+## 7
+
+	@Override
+	public void putToCache(PutRecordsRequest putRecordsRequest) 
+	{
+		....
+		if(dataTmpFile!=null && !dataTmpFile.exists())//type at the first condition, the == throws nullPointerException before creating the file
+		{
+			try{
+				dataTmpfile.createNewFile();
+			}catch(IOException e){
+				LOGGER.error("....",e);
+				return;
+			}
+		}
+	}
+	
+## 8
+
+private void shiftRightDestructive(int wordShifts,
+            int bitShiftsInWord,
+            boolean roundUp) 
+    {
+//      bitShiftsInWord should never be 0
+            if (wordShifts == 0 || bitShiftsInWord == 0) {
+                return;
+            }
+            assert (wordShifts >= 0);
+            assert (bitShiftsInWord >= 0);
+            assert (bitShiftsInWord < 32);
+            if (wordShifts >= 4) {
+                zeroClear();
+                return;
+            }
+            final int shiftRestore = 32 - bitShiftsInWord;
+            // check this because "123 << 32" will be 123.
+            final boolean noRestore = bitShiftsInWord == 0;
+            final int roundCarryNoRestoreMask = 1 << 31;
+            final int roundCarryMask = (1 << (bitShiftsInWord - 1));  // <=
+            ....
+    }
+
+## 9
+
+
+public class Ejercicio9 {
+	
+	public void logSargResult (int stripeIx, boolean[] rgsToRead) {
+        for (int i = 0, valOffset = 0; i < elements; ++i, val0ffset += 64) {
+            long val = 0;
+            for (int j = 0; j<64; ++j) {
+                int ix = valOffset +j;
+                if (rgsToRead.length == ix) break;
+                if (!rgsToRead[ix]) continue;
+                    val=  val | ((long)1 << j);// literal 1 is type int
+            }
+    }
+
+## 10
+
+public void testSignSHA256CompleteEvenHeight2() {
+        ....
+        int height = 10;
+        ....
+        for (int i = 0; i < (1 << height); i++) {
+            byte[] signature = xmss.sign(new byte[1024]);
+            switch (i) { 
+                case 0x005b:
+                    assertEquals(signatures[0], Hex.toHexString(signature));
+                    break;
+                case 0x0822:	// this condition will never happen
+                    assertEquals(signatures[1], Hex.toHexString(signature));
+                    break;
+                ....
+            }
+        }
+    }
 	
 	
-	
-	
-	
-	
-	
-	
+## Extra
+
+@Override
+    public boolean equals(Object o) 
+    {
+      ....
+      CheckpointStatistics that = (CheckpointStatistics) o;
+      return id == that.id &&
+        savepoint == that.savepoint &&
+        triggerTimestamp == that.triggerTimestamp &&
+        latestAckTimestamp == that.latestAckTimestamp &&
+        stateSize == that.stateSize &&
+        duration == that.duration &&
+        alignmentBuffered == that.alignmentBuffered &&
+        processedData == that.processedData &&                // <= it compares to the same, 'that' is missing
+        persistedData == that.persistedData &&
+        numSubtasks == that.numSubtasks &&
+        numAckSubtasks == that.numAckSubtasks &&
+        status == that.status &&
+        Objects.equals(checkpointType, that.checkpointType) &&
+        Objects.equals(
+          checkpointStatisticsPerTask, 
+          that.checkpointStatisticsPerTask);
+    }
